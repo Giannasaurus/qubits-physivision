@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import Header from './components/header.jsx'
 import Dropzone from './components/dropzone.jsx'
 import './App.css'
 
@@ -6,7 +7,10 @@ function App() {
   const [count, setCount] = useState(0)
   
   return (
-    <Dropzone/>
+    <>
+      <Header/>
+      <Dropzone/>
+    </>
   )
 }
 

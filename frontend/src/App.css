@@ -5,12 +5,15 @@
 }
 
 :root {
-    --color-quantum-orange: #FF9B22;
-    --color-quantum-blue: #5F8FF5;
-    --color-quantum-purple: #8b5cf6;
+    --color-text-light: #FAF9F6; /* Off-white */
+    --color-text-dark: #28282B; /* Matte Black */
+    --color-accent-1: #FF9B22; /* Quantum Orange */
+    --color-accent-2: #5F8FF5; /* Quantum Blue */
+    --color-accent-3: #8b5cf6; /* Quantum Purple */
     
     --font-size-sm: 1.05rem;
     --font-size-md: 1.075rem;
+    --font-size-lg: 1rem;
     
     --box-padding-md: 32px;
     
@@ -26,7 +29,7 @@
 }
 
 /** ===============================
-            DROPZONE.jsx
+        DROPZONE
     =============================== **/
 
 main {
@@ -86,4 +89,17 @@ main {
 
 .invisible {
     display: none;
+}
+
+/** ===============================
+            HEADER
+    =============================== **/
+    
+header {
+    background-color: var(--color-accent-3);
+    padding: 24px 36px;
+}
+
+header h1 {
+    color: var(--color-text-light);
 }

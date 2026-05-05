@@ -1,3 +1,4 @@
+/*
 :root {
   --text: #6b6375;
   --text-h: #08060d;
@@ -30,7 +31,6 @@
   }
 }
 
-/*
 @media (prefers-color-scheme: dark) {
   :root {
     --text: #9ca3af;

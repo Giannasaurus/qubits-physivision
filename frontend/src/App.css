@@ -74,9 +74,8 @@ main {
     width: 75%;
 }
 
-#dropzone__area {
-    font-size: var(--font-size-sm);
-    padding: 100px;
+#dropzone__clickable {
+    cursor: pointer;
 }
 
 #dropzone__area {

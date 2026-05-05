@@ -1,0 +1,89 @@
+@font-face {
+    font-family: Inter;
+    src: url("./assets/fonts/Inter/Inter-VariableFont_opsz\,wght.ttf") format ("truetype");
+    font-weight: 100 900;
+}
+
+:root {
+    --color-quantum-orange: #FF9B22;
+    --color-quantum-blue: #5F8FF5;
+    --color-quantum-purple: #8b5cf6;
+    
+    --font-size-sm: 1.05rem;
+    --font-size-md: 1.075rem;
+    
+    --box-padding-md: 32px;
+    
+    --btn-group-gap: 0 8px;
+    --dropzone-gap: 12px 0;
+}
+
+* {
+    font-family: Inter;
+    box-sizing: border-box;
+    padding: 0;
+    margin: 0;
+}
+
+/** ===============================
+            DROPZONE.jsx
+    =============================== **/
+
+main {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+#dropzone {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: var(--dropzone-gap);
+    width: 50%;
+}
+
+#dropzone__area {
+    font-size: var(--font-size-sm);
+    padding: 100px;
+}
+
+#dropzone__area {
+    border-radius: 10px;
+    border-style: dashed;
+    border-width: 4px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: var(--dropzone-gap);
+    width: 100%;
+    padding: var(--box-padding-md);
+}
+
+#uploadIcon {
+    width: 65px;
+    height: auto;
+}
+
+#uploadFileBtn {
+    width: 100%;
+}
+
+#uploadFileLabel {
+    background-color: black;
+    color: #fff;
+    display: inline-block;
+    cursor: pointer;
+}
+
+#dropzone__btnGroup {
+    display: flex;
+    justify-content: flex-end;
+    gap: var(--btn-group-gap);
+    width: 100%;
+}
+
+.invisible {
+    display: none;
+}

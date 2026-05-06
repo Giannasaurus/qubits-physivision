@@ -1,5 +1,3 @@
-import katex from "katex";
-import "katex/dist/katex.min.css";
 import AnalysisCharts from "./analysis-charts.jsx";
 import AnalysisSummary from "./analysis-summary.jsx";
 
@@ -9,21 +7,6 @@ function formatNumber(value) {
   }
 
   return Number(value).toFixed(6);
-}
-
-function MathLabel({ fallback, math }) {
-  return (
-    <span
-      className="result-label"
-      aria-label={fallback}
-      dangerouslySetInnerHTML={{
-        __html: katex.renderToString(math, {
-          output: "html",
-          throwOnError: false,
-        }),
-      }}
-    />
-  );
 }
 
 function ResultRow({ label, value }) {
@@ -51,27 +34,27 @@ export default function AnalysisResults({ analysis }) {
     [
       "RESULTS",
       [
-        ["omega", <MathLabel fallback="omega" math="\\omega" />, formatNumber(physics.omega)],
-        ["omega0", <MathLabel fallback="omega zero" math="\\omega_0" />, formatNumber(physics.omega0)],
-        ["gamma", <MathLabel fallback="gamma" math="\\gamma" />, formatNumber(physics.gamma)],
-        ["k", <MathLabel fallback="spring constant k" math="k" />, formatNumber(physics.springConstant)],
-        ["zeta", <MathLabel fallback="zeta" math="\\zeta" />, formatNumber(physics.zeta)],
-        ["phase", <MathLabel fallback="phase phi" math="\\phi" />, formatNumber(physics.phase)],
+        ["omega", "omega (ω)", formatNumber(physics.omega)],
+        ["omega0", "omega0 (ω0)", formatNumber(physics.omega0)],
+        ["gamma", "gamma (γ)", formatNumber(physics.gamma)],
+        ["k", "spring constant (k)", formatNumber(physics.springConstant)],
+        ["zeta", "zeta (ζ)", formatNumber(physics.zeta)],
+        ["phase", "phase phi (φ)", formatNumber(physics.phase)],
       ],
     ],
     ["REGIME", [["regime", "regime", physics.regime]]],
     [
       "STABILITY",
       [
-        ["omegaDrift", <MathLabel fallback="omega drift percent" math="\\Delta\\omega\\ (\\%)" />, formatNumber(physics.omegaDriftPercent)],
-        ["gammaDrift", <MathLabel fallback="gamma drift percent" math="\\Delta\\gamma\\ (\\%)" />, formatNumber(physics.gammaDriftPercent)],
+        ["omegaDrift", "Delta omega %", formatNumber(physics.omegaDriftPercent)],
+        ["gammaDrift", "Delta gamma %", formatNumber(physics.gammaDriftPercent)],
       ],
     ],
     [
       "FIT",
       [
-        ["rmse", <MathLabel fallback="RMSE" math="\\mathrm{RMSE}" />, formatNumber(physics.rmse)],
-        ["nrmse", <MathLabel fallback="NRMSE" math="\\mathrm{NRMSE}" />, formatNumber(physics.nrmse)],
+        ["rmse", "RMSE", formatNumber(physics.rmse)],
+        ["nrmse", "NRMSE", formatNumber(physics.nrmse)],
       ],
     ],
   ];

@@ -390,6 +390,10 @@ main {
     font-weight: var(--font-weight-bold);
 }
 
+.result-row-label {
+    white-space: nowrap;
+}
+
 .analysis-summary {
     background-color: var(--color-summary-bg);
     border: var(--border-width-sm) solid var(--color-accent-1);

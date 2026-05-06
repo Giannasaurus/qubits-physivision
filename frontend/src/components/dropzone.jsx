@@ -10,6 +10,7 @@ function VideoPreview({ videoUrl }) {
 export default function Dropzone() {
   const [selectedVideo, setSelectedVideo] = useState(null);
   const [videoUrl, setVideoUrl] = useState(null);
+  const [mass, setMass] = useState("");
   const [analysis, setAnalysis] = useState(null);
   const [error, setError] = useState("");
   const [isAnalyzing, setIsAnalyzing] = useState(false);
@@ -32,12 +33,14 @@ export default function Dropzone() {
   }
 
   async function handleAnalyze() {
-    if (!selectedVideo || isAnalyzing) {
+    const parsedMass = Number(mass);
+    if (!selectedVideo || isAnalyzing || parsedMass <= 0) {
       return;
     }
 
     const formData = new FormData();
     formData.append("file", selectedVideo);
+    formData.append("mass", parsedMass);
 
     setIsAnalyzing(true);
     setError("");
@@ -95,6 +98,21 @@ export default function Dropzone() {
         )}
 
         {videoUrl && (
+          <div className="analysis-controls">
+            <label htmlFor="massInput">Mass (kg)</label>
+            <input
+              id="massInput"
+              min="0"
+              step="0.001"
+              type="number"
+              value={mass}
+              onChange={(event) => setMass(event.target.value)}
+              placeholder="0.250"
+            />
+          </div>
+        )}
+
+        {videoUrl && (
           <footer id="dropzone__btnGroup">
             <button
               id="replace-file-btn"
@@ -115,7 +133,7 @@ export default function Dropzone() {
               id="upload-analyze-btn"
               type="button"
               onClick={handleAnalyze}
-              disabled={isAnalyzing}
+              disabled={isAnalyzing || Number(mass) <= 0}
             >
               {isAnalyzing ? "Analyzing..." : "Upload & Analyze"}
             </button>
@@ -139,6 +157,30 @@ export default function Dropzone() {
               <div>
                 <dt>dt</dt>
                 <dd>{analysis.dt.toFixed(4)}s</dd>
+              </div>
+              <div>
+                <dt>Regime</dt>
+                <dd>{analysis.physics.regime}</dd>
+              </div>
+              <div>
+                <dt>k</dt>
+                <dd>{analysis.physics.springConstant.toFixed(3)}</dd>
+              </div>
+              <div>
+                <dt>Damping</dt>
+                <dd>{analysis.physics.gamma.toFixed(3)}</dd>
+              </div>
+              <div>
+                <dt>omega0</dt>
+                <dd>{analysis.physics.omega0.toFixed(3)}</dd>
+              </div>
+              <div>
+                <dt>NRMSE</dt>
+                <dd>{analysis.physics.nrmse.toFixed(3)}</dd>
+              </div>
+              <div>
+                <dt>Peaks</dt>
+                <dd>{analysis.physics.peakCount}</dd>
               </div>
             </dl>
           </section>

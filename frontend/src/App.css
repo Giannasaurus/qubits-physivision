@@ -158,6 +158,25 @@ main {
     width: 100%;
 }
 
+.analysis-controls {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    width: 100%;
+}
+
+.analysis-controls label {
+    font-weight: 800;
+}
+
+.analysis-controls input {
+    width: 140px;
+    border: 2px solid var(--color-accent-3);
+    border-radius: 8px;
+    padding: 10px 12px;
+    font-size: 1rem;
+}
+
 #dropzone__btnGroup button {
     font-size: var(--font-size-sm);
     font-weight: var(--font-weight-btn-text);

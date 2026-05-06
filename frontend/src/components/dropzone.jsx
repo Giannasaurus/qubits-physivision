@@ -82,7 +82,14 @@ export default function Dropzone() {
 
         {!hasVideo && <EmptyUploadPrompt onVideoSelect={handleVideoSelect} />}
 
-        {hasVideo && <AnalysisControls mass={mass} onMassChange={setMass} />}
+        {hasVideo && (
+          <AnalysisControls
+            mass={mass}
+            onAnalyze={handleAnalyze}
+            onMassChange={setMass}
+            isAnalyzeDisabled={isAnalyzeDisabled}
+          />
+        )}
 
         {hasVideo && (
           <DropzoneActions

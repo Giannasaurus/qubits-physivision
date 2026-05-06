@@ -1,22 +1,43 @@
+import { useRef } from "react";
 import uploadIcon from "../assets/icons/upload.svg";
 
 export default function EmptyUploadPrompt({ onVideoSelect }) {
+  const fileInputRef = useRef(null);
+
+  function openFilePicker() {
+    fileInputRef.current.click();
+  }
+
+  function handleUploadPromptKeyDown(event) {
+    if (event.key === "Enter" || event.key === " ") {
+      event.preventDefault();
+      openFilePicker();
+    }
+  }
+
   return (
-    <label id="dropzone__clickable" htmlFor="uploadFileBtn">
+    <div
+      id="dropzone__clickable"
+      role="button"
+      tabIndex="0"
+      onClick={openFilePicker}
+      onKeyDown={handleUploadPromptKeyDown}
+    >
       <div id="dropzone__area">
         <img id="uploadIcon" src={uploadIcon} alt="Upload icon" />
         <p>Drag & drop to upload</p>
         <input
+          ref={fileInputRef}
           id="uploadFileBtn"
           className="invisible"
           type="file"
           accept="video/*"
           onChange={onVideoSelect}
         />
-        <label id="uploadFileLabel" htmlFor="uploadFileBtn">
+        <span id="uploadFileLabel">
           Choose File
-        </label>
+        </span>
       </div>
-    </label>
+    </div>
   );
 }

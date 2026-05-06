@@ -1,4 +1,10 @@
-export default function AnalysisControls({ mass, onMassChange }) {
+export default function AnalysisControls({ mass, onAnalyze, onMassChange, isAnalyzeDisabled }) {
+  function handleMassKeyDown(event) {
+    if (event.key === "Enter" && !isAnalyzeDisabled) {
+      onAnalyze();
+    }
+  }
+
   return (
     <div className="analysis-controls">
       <label htmlFor="massInput">Mass (kg)</label>
@@ -9,6 +15,7 @@ export default function AnalysisControls({ mass, onMassChange }) {
         type="number"
         value={mass}
         onChange={(event) => onMassChange(event.target.value)}
+        onKeyDown={handleMassKeyDown}
         placeholder="0.250"
       />
     </div>

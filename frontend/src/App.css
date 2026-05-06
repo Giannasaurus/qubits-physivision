@@ -1,7 +1,9 @@
 @font-face {
     font-family: Inter;
-    src: url("./assets/fonts/Inter/Inter-VariableFont_opsz\,wght.ttf") format ("truetype");
-    font-weight: 100 900;
+    src: url("./assets/fonts/Inter/Inter-VariableFont_opsz\,wght.ttf") format("truetype");
+    font-weight: 400 700;
+    font-style: normal;
+    font-display: swap;
 }
 
 /** ===============================
@@ -41,10 +43,11 @@
     --font-size-result-body: 1rem;
     --font-size-chart-label: 0.82rem;
     
+    --font-weight-regular: 400;
     --font-weight-bold: 700;
-    --font-weight-heavy: 800;
-    --font-weight-black: 900;
-    --font-weight-btn-text: 600;
+    --font-weight-heavy: var(--font-weight-bold);
+    --font-weight-black: var(--font-weight-bold);
+    --font-weight-btn-text: var(--font-weight-bold);
     
     --radius-sm: 8px;
     --btn-radius: 12px;

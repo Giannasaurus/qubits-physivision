@@ -385,7 +385,8 @@ main {
     line-height: var(--result-line-height);
 }
 
-.analysis-results span {
+.result-row-label,
+.analysis-summary span {
     font-weight: var(--font-weight-bold);
 }
 

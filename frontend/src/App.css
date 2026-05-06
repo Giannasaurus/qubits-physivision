@@ -48,6 +48,7 @@
     --font-weight-heavy: var(--font-weight-bold);
     --font-weight-black: var(--font-weight-bold);
     --font-weight-btn-text: var(--font-weight-bold);
+    --font-weight-project-name: 900;
     
     --radius-sm: 8px;
     --btn-radius: 12px;
@@ -121,6 +122,7 @@ header {
 header h1 {
     color: var(--color-accent-3);
     font-size: var(--font-size-hero);
+    font-weight: var(--font-weight-project-name);
     line-height: 1;
 }
 

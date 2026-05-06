@@ -76,6 +76,7 @@
     --dropzone-width: 75%;
     --upload-icon-width: 65px;
     --mass-input-width: 140px;
+    --mass-unit-width: 84px;
     --video-preview-width: min(100%, 960px);
     --video-preview-max-height: 60vh;
     --chart-height: 240px;
@@ -268,12 +269,23 @@ main {
     font-weight: var(--font-weight-bold);
 }
 
-.analysis-controls input {
+.mass-input-group {
+    display: flex;
+    gap: var(--space-xs);
+}
+
+.analysis-controls input,
+.analysis-controls select {
     width: var(--mass-input-width);
     border: var(--border-width-sm) solid var(--color-accent-3);
     border-radius: var(--radius-sm);
     padding: var(--input-padding-md);
     font-size: var(--font-size-lg);
+}
+
+.analysis-controls select {
+    width: var(--mass-unit-width);
+    background-color: var(--color-surface);
 }
 
 #dropzone__btnGroup button {

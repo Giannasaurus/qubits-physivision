@@ -6,18 +6,26 @@ import EmptyUploadPrompt from "./empty-upload-prompt.jsx";
 import VideoPreview from "./video-preview.jsx";
 
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL ?? "http://localhost:8000";
+const MASS_TO_KG = {
+  kg: 1,
+  g: 0.001,
+  lb: 0.45359237,
+  oz: 0.028349523125,
+};
 
 export default function Dropzone() {
   const [selectedVideo, setSelectedVideo] = useState(null);
   const [videoUrl, setVideoUrl] = useState(null);
   const [mass, setMass] = useState("");
+  const [massUnit, setMassUnit] = useState("kg");
   const [analysis, setAnalysis] = useState(null);
   const [error, setError] = useState("");
   const [isAnalyzing, setIsAnalyzing] = useState(false);
   const replaceFileInputRef = useRef(null);
   const parsedMass = Number(mass);
+  const massInKg = parsedMass * MASS_TO_KG[massUnit];
   const hasVideo = Boolean(videoUrl);
-  const isAnalyzeDisabled = isAnalyzing || parsedMass <= 0;
+  const isAnalyzeDisabled = isAnalyzing || !Number.isFinite(massInKg) || massInKg <= 0;
 
   function handleReplaceFileClick() {
     replaceFileInputRef.current.click();
@@ -42,7 +50,7 @@ export default function Dropzone() {
 
     const formData = new FormData();
     formData.append("file", selectedVideo);
-    formData.append("mass", parsedMass);
+    formData.append("mass", massInKg);
 
     setIsAnalyzing(true);
     setError("");
@@ -85,8 +93,10 @@ export default function Dropzone() {
         {hasVideo && (
           <AnalysisControls
             mass={mass}
+            massUnit={massUnit}
             onAnalyze={handleAnalyze}
             onMassChange={setMass}
+            onMassUnitChange={setMassUnit}
             isAnalyzeDisabled={isAnalyzeDisabled}
           />
         )}

@@ -29,6 +29,7 @@ frame_stride = int(os.getenv("FRAME_STRIDE", "1"))
 app.add_middleware(
     CORSMiddleware,
     allow_origins=allowed_origins,
+    allow_origin_regex=r"https://qubits-physivision-[a-z0-9-]+-giannasaurus-projects\.vercel\.app",
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],

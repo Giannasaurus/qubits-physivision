@@ -6,6 +6,7 @@ import EmptyUploadPrompt from "./empty-upload-prompt.jsx";
 import VideoPreview from "./video-preview.jsx";
 
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL ?? "http://localhost:8000";
+const ANALYSIS_TIMEOUT_MS = 90000;
 const MASS_TO_KG = {
   kg: 1,
   g: 0.001,
@@ -108,6 +109,8 @@ export default function Dropzone() {
     const formData = new FormData();
     formData.append("file", selectedVideo);
     formData.append("mass", massInKg);
+    const controller = new AbortController();
+    const timeoutId = window.setTimeout(() => controller.abort(), ANALYSIS_TIMEOUT_MS);
 
     setIsAnalyzing(true);
     setError("");
@@ -117,17 +120,23 @@ export default function Dropzone() {
       const response = await fetch(`${API_BASE_URL}/api/analyze`, {
         method: "POST",
         body: formData,
+        signal: controller.signal,
       });
 
-      const payload = await response.json();
+      const payload = await response.json().catch(() => ({}));
       if (!response.ok) {
         throw new Error(payload.detail || "Analysis failed.");
       }
 
       setAnalysis(payload);
     } catch (err) {
-      setError(err.message);
+      if (err.name === "AbortError") {
+        setError("Analysis timed out. Try a shorter video clip or wait for the backend to wake up, then run it again.");
+      } else {
+        setError(err.message || "Analysis failed.");
+      }
     } finally {
+      window.clearTimeout(timeoutId);
       setIsAnalyzing(false);
     }
   }

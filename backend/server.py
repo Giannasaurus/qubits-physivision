@@ -1,6 +1,7 @@
 import shutil
 import tempfile
 import os
+import time
 from pathlib import Path
 
 from fastapi import FastAPI, File, Form, HTTPException, UploadFile
@@ -22,6 +23,8 @@ allowed_origins = [
     for origin in os.getenv("FRONTEND_ORIGINS", "").split(",")
     if origin.strip()
 ] or DEFAULT_ALLOWED_ORIGINS
+max_analysis_frames = int(os.getenv("MAX_ANALYSIS_FRAMES", "180"))
+frame_stride = int(os.getenv("FRAME_STRIDE", "1"))
 
 app.add_middleware(
     CORSMiddleware,
@@ -39,6 +42,7 @@ def health():
 
 @app.post("/api/analyze")
 def analyze(file: UploadFile = File(...), mass: float = Form(...)):
+    started_at = time.perf_counter()
     suffix = Path(file.filename or "upload.mp4").suffix or ".mp4"
 
     with tempfile.TemporaryDirectory(prefix="physivision-") as temp_dir:
@@ -49,7 +53,12 @@ def analyze(file: UploadFile = File(...), mass: float = Form(...)):
             shutil.copyfileobj(file.file, f)
 
         try:
-            result = analyze_video(video_path, output_dir=temp_path)
+            result = analyze_video(
+                video_path,
+                output_dir=temp_path,
+                max_frames=max_analysis_frames,
+                frame_stride=frame_stride,
+            )
             physics = analyze_physics(result["centers"], result["fps"], mass)
         except Exception as exc:
             raise HTTPException(status_code=422, detail=str(exc)) from exc
@@ -59,5 +68,6 @@ def analyze(file: UploadFile = File(...), mass: float = Form(...)):
             "fps": result["fps"],
             "dt": result["dt"],
             "centers": result["centers"],
+            "processingSeconds": round(time.perf_counter() - started_at, 2),
             "physics": physics,
         }

@@ -5,6 +5,17 @@ import cv2
 import numpy as np
 
 
+def _resize_frame(frame, max_dimension):
+    height, width = frame.shape[:2]
+    largest_dimension = max(height, width)
+    if largest_dimension <= max_dimension:
+        return frame, 1.0
+
+    scale = max_dimension / largest_dimension
+    resized = cv2.resize(frame, None, fx=scale, fy=scale, interpolation=cv2.INTER_AREA)
+    return resized, scale
+
+
 class TemplateTracker:
     def init(self, frame, bbox):
         self.bbox = tuple(map(int, bbox))
@@ -38,14 +49,14 @@ class TemplateTracker:
 
 
 def create_tracker():
-    if hasattr(cv2, "legacy") and hasattr(cv2.legacy, "TrackerCSRT_create"):
-        return cv2.legacy.TrackerCSRT_create()
-    if hasattr(cv2, "TrackerCSRT_create"):
-        return cv2.TrackerCSRT_create()
     if hasattr(cv2, "legacy") and hasattr(cv2.legacy, "TrackerKCF_create"):
         return cv2.legacy.TrackerKCF_create()
     if hasattr(cv2, "TrackerKCF_create"):
         return cv2.TrackerKCF_create()
+    if hasattr(cv2, "legacy") and hasattr(cv2.legacy, "TrackerCSRT_create"):
+        return cv2.legacy.TrackerCSRT_create()
+    if hasattr(cv2, "TrackerCSRT_create"):
+        return cv2.TrackerCSRT_create()
     return TemplateTracker()
 
 
@@ -78,7 +89,15 @@ def _auto_bbox(frame):
     return (x, y, w, h)
 
 
-def analyze_video(video_path, bbox=None, output_dir=None, max_lost=25):
+def analyze_video(
+    video_path,
+    bbox=None,
+    output_dir=None,
+    max_lost=25,
+    max_frames=180,
+    max_dimension=360,
+    frame_stride=1,
+):
     video_path = Path(video_path)
     output_dir = Path(output_dir or video_path.parent)
     output_dir.mkdir(parents=True, exist_ok=True)
@@ -91,6 +110,8 @@ def analyze_video(video_path, bbox=None, output_dir=None, max_lost=25):
     if not ret:
         cap.release()
         raise RuntimeError("Cannot read first frame.")
+
+    frame, _ = _resize_frame(frame, max_dimension)
 
     if bbox is None:
         bbox = _auto_bbox(frame)
@@ -110,11 +131,21 @@ def analyze_video(video_path, bbox=None, output_dir=None, max_lost=25):
     vx, vy = 0.0, 0.0
     alpha = 0.35
     beta = 0.75
+    read_frames = 0
+    processed_frames = 0
 
     while True:
         ret, frame = cap.read()
         if not ret:
             break
+        read_frames += 1
+        if read_frames % frame_stride != 0:
+            continue
+        if processed_frames >= max_frames:
+            break
+
+        frame, _ = _resize_frame(frame, max_dimension)
+        processed_frames += 1
 
         success, bbox = tracker.update(frame)
         if not success:
@@ -182,7 +213,7 @@ def analyze_video(video_path, bbox=None, output_dir=None, max_lost=25):
         "centers": [{"x": x, "y": y} for x, y in centers],
         "csv": str(csv_path),
         "npy": str(npy_path),
-        "dt": 1 / fps,
-        "fps": fps,
+        "dt": frame_stride / fps,
+        "fps": fps / frame_stride,
         "samples": len(centers),
     }

@@ -234,6 +234,14 @@ main {
     text-align: center;
 }
 
+.sample-video-note {
+    width: 100%;
+    color: var(--color-accent-3-strong);
+    font-size: var(--font-size-xs);
+    font-weight: var(--font-weight-bold);
+    text-align: center;
+}
+
 #dropzone__area img {
     filter: brightness(0) saturate(100%) invert(11%) sepia(8%) saturate(487%) hue-rotate(201deg) brightness(99%) contrast(87%);
 }

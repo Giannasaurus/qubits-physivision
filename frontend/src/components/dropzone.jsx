@@ -19,6 +19,7 @@ const MASS_TO_KG = {
 export default function Dropzone() {
   const [selectedVideo, setSelectedVideo] = useState(null);
   const [videoUrl, setVideoUrl] = useState(null);
+  const [isSampleVideo, setIsSampleVideo] = useState(false);
   const [mass, setMass] = useState("");
   const [massUnit, setMassUnit] = useState("kg");
   const [analysis, setAnalysis] = useState(null);
@@ -50,6 +51,7 @@ export default function Dropzone() {
     const url = URL.createObjectURL(video);
     setSelectedVideo(video);
     setVideoUrl(url);
+    setIsSampleVideo(false);
     setAnalysis(null);
     setError("");
   }
@@ -64,17 +66,15 @@ export default function Dropzone() {
     setError("");
 
     try {
-      const response = await fetch(SAMPLE_VIDEO_PATH);
+      const response = await fetch(SAMPLE_VIDEO_PATH, { method: "HEAD" });
       if (!response.ok) {
         throw new Error("Sample video failed to load.");
       }
 
-      const blob = await response.blob();
-      const sampleVideo = new File([blob], "actualspring.mp4", {
-        type: blob.type || "video/mp4",
-      });
-
-      selectVideo(sampleVideo);
+      setSelectedVideo(null);
+      setVideoUrl(SAMPLE_VIDEO_PATH);
+      setIsSampleVideo(true);
+      setAnalysis(null);
       setMass(SAMPLE_MASS_KG);
       setMassUnit("kg");
     } catch (err) {
@@ -130,12 +130,14 @@ export default function Dropzone() {
   }
 
   async function handleAnalyze() {
-    if (!selectedVideo || isAnalyzeDisabled) {
+    if ((!selectedVideo && !isSampleVideo) || isAnalyzeDisabled) {
       return;
     }
 
     const formData = new FormData();
-    formData.append("file", selectedVideo);
+    if (!isSampleVideo) {
+      formData.append("file", selectedVideo);
+    }
     formData.append("mass", massInKg);
     const controller = new AbortController();
     const timeoutId = window.setTimeout(() => controller.abort(), ANALYSIS_TIMEOUT_MS);
@@ -145,7 +147,8 @@ export default function Dropzone() {
     setAnalysis(null);
 
     try {
-      const response = await fetch(`${API_BASE_URL}/api/analyze`, {
+      const endpoint = isSampleVideo ? "analyze-sample" : "analyze";
+      const response = await fetch(`${API_BASE_URL}/api/${endpoint}`, {
         method: "POST",
         body: formData,
         signal: controller.signal,
@@ -171,11 +174,11 @@ export default function Dropzone() {
 
   useEffect(() => {
     return () => {
-      if (videoUrl) {
+      if (videoUrl && !isSampleVideo) {
         URL.revokeObjectURL(videoUrl);
       }
     };
-  }, [videoUrl]);
+  }, [videoUrl, isSampleVideo]);
 
   return (
     <main>
@@ -209,6 +212,10 @@ export default function Dropzone() {
 
         {hasVideo && isDragging && (
           <p className="dropzone-replace-hint">Drop to replace the current video</p>
+        )}
+
+        {isSampleVideo && (
+          <p className="sample-video-note">Sample video selected. Analysis will use the backend sample directly.</p>
         )}
 
         {hasVideo && (
